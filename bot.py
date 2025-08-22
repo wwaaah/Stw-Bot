@@ -18,7 +18,7 @@ bot = discord.Bot(intents=intents)
 
 #bot uses py-cord not discord.py
 
-TOKEN = os.getenv('MTQwNTIyODkwNTc0ODYyNzQ1Ng.GCN5af.24iUr4Lb_SvCHOgkuEnbNuJJci8TDmE_EcN-JA')
+TOKEN = os.getenv('bot_token')
 
 class MemoryDatabase:
     def __init__(self):
@@ -666,4 +666,5 @@ async def on_ready():
     print("Bot is online.")
     bot.sync_commands()
 
-bot.run(TOMTQwNTIyODkwNTc0ODYyNzQ1Ng.GCN5af.24iUr4Lb_SvCHOgkuEnbNuJJci8TDmE_EcN-JA)
+
+bot.run(bot_token)
