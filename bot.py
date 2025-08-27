@@ -86,19 +86,24 @@ async def start_web_server():
 
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', 8080)
+    port = int(os.environ.get('PORT') or os.environ.get('AIOHTTP_PORT') or 8080)
+    site = web.TCPSite(runner, '0.0.0.0', port)
     await site.start()
-    print("UptimeRobot server started on port 8080")
+    print(f"Uptime server started on port {port}")
 
 intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
 
-TOKEN = os.getenv('DISCORD_TOKEN')
+# Ensure env compatibility on Cybrancee (supports env.txt and multiple token keys)
+if not os.getenv('DISCORD_TOKEN') and not os.getenv('TOKEN') and not os.getenv('BOT_TOKEN'):
+    load_dotenv('env.txt')
+
+TOKEN = os.getenv('DISCORD_TOKEN') or os.getenv('TOKEN') or os.getenv('BOT_TOKEN')
 
 if not TOKEN:
-    print("ERROR: DISCORD_TOKEN environment variable not found!")
-    print("Please add your Discord bot token to the Secrets tool with key 'DISCORD_TOKEN'")
-    exit(1)
+    print("ERROR: Discord token not found in environment!")
+    print("Set 'DISCORD_TOKEN' or 'TOKEN' in your Cybrancee Secrets (or env.txt).")
+    raise SystemExit(1)
 
 class MemoryDatabase:
     def __init__(self):
@@ -1880,7 +1885,7 @@ async def customcrowns(ctx, crowns: discord.Option(int, description="Custom Crow
     
     url1 = f"https://party-service-prod.ol.epicgames.com/party/api/v1/Fortnite/parties/{party_id}/members/{account_id}/meta"
     response = requests.patch(url=url1, headers=headers, json=loadout_body)
-    time.sleep(3)
+    await asyncio.sleep(3)
     response2 = requests.patch(url=url1, headers=headers, json=emote_body)
 
     if response.status_code == 204 and response2.status_code == 204:
